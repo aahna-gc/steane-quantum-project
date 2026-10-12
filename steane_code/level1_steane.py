@@ -34,7 +34,7 @@ def steane_stabilizer_round(circuit, first_round=False):
     circuit.append("H", x_ancillas)
     circuit.append("TICK")
     for k in range(4):
-        for ancilla, stabilizer in zip(z_ancillas, z_stabilizers):
+        for ancilla, stabilizer in zip(x_ancillas, x_stabilizers):
             circuit.append("CX", [ancilla, stabilizer[k]])
         circuit.append("TICK")
     circuit.append("H", x_ancillas)

@@ -24,6 +24,6 @@ for p in noise_levels:
    print("Detection events:", detection_events.shape)
    print("Observable flips:", observable_flips.shape)
    print("Logical error rate:", observable_flips.mean())
-   print("Noiseless detector events:", detection_events.sum())
-   print("Noiseless logical flips:", observable_flips.sum())
+   print("Total detector events:", detection_events.sum())
+   print("Total logical flips:", observable_flips.sum())
    print(f"p={p:.1e}, logical error rate={observable_flips.mean():.6g}")

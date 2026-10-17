@@ -1,5 +1,4 @@
 import stim
-from level1_steane import level_1_steane
 
 """Implement circuit-level noise"""
 # Helper function: implement idle noise.
@@ -66,19 +65,5 @@ def add_circuit_noise(noiseless_circuit, p_idle, p_1gate, p_2gate, p_measure, p_
         # Preserve all other instructions
         else:
             noisy_circuit.append(instruction)
+            
     return noisy_circuit
-
-"""Detector Measurements"""
-level1_circuit = level_1_steane(1)
-noisy_circuit = add_circuit_noise(level1_circuit, p_1gate=1e-4, p_2gate=1e-4, p_measure=1e-4, p_reset=1e-4, p_idle=1e-4)
-runs = 100_000
-
-sampler = noisy_circuit.compile_detector_sampler()
-detection_events, observable_flips = sampler.sample(
-    shots=runs,
-    separate_observables=True,
-)
-
-print("Detection events:", detection_events.shape)
-print("Observable flips:", observable_flips.shape)
-print("Logical error rate:", observable_flips.mean())

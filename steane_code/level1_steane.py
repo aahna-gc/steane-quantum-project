@@ -15,7 +15,7 @@ def steane_stabilizer_round(circuit, first_round=False):
     # Entangle the ancilla and stabilizer together.
     for k in range(4):
         for ancilla, stabilizer in zip(z_ancillas, z_stabilizers):
-            circuit.append("CX", [ancilla, stabilizer[k]])
+            circuit.append("CX", [stabilizer[k], ancilla])
         circuit.append("TICK")
     circuit.append("MR", z_ancillas)
     circuit.append("TICK")

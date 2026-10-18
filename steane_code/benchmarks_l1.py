@@ -26,3 +26,4 @@ for p in noise_levels:
     print("Total detector events:", detection_events.sum())
     print("Total logical flips:", observable_flips.sum())
     print(f"p={p:.1e}, logical error rate={observable_flips.mean():.6g}")
+    print(len(noisy_circuit.shortest_graphlike_error()))

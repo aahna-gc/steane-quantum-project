@@ -1,7 +1,7 @@
 import numpy as np
 import stim
 
-from steane_code import circuit_level_shor
+from steane_code import noise_and_benchmarks
 from hard_decision_decoder import hard_decision_decoder
 
 # ---------------------------------------------------------------------------

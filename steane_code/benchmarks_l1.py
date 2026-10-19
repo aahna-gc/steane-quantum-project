@@ -2,7 +2,7 @@ from level1_steane import level_1_steane
 from noise import add_circuit_noise
 
 """Detector Measurements"""
-level1_circuit = level_1_steane(1)
+level1_circuit = level_1_steane(1, "Z")
 noise_levels = [1e-3, 3e-4, 1e-4, 3e-5, 1e-5]
 runs = 100_000
 for p in noise_levels:

@@ -55,7 +55,7 @@ def logical_qubits(context, level, base):
     state["sz"] = [set() for _ in range(3)]
     state["fz"] = [set() for _ in range(3)]
     state["sx"] = list(x_syndromes)
-    state["fx"] = list(x_flags)
+    state["fx"] = list(x_syndromes)
 
 def logical_h(context, level, base):
     """Create a transversal logical H gate."""

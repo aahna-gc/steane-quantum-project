@@ -1,7 +1,7 @@
 import stim
 
 """Encode the stabilizers and measurements."""
-def steane_stabilizer_round(circuit, first_round=False):
+def steane_stabilizer_round(circuit, first_round=False, basis="Z"):
     # Z-stabilizers (bit-flip errors)
     z_stabilizers = [
         (3, 4, 5, 6),
@@ -68,9 +68,14 @@ def steane_stabilizer_round(circuit, first_round=False):
         circuit.append("DETECTOR", [stim.target_rec(-3 + i)])
 
     if first_round:
-        # Get Z-stabilizer measurements; X-stabilizer measurements are random so do not have to be measured.
         for i in range(3):
-            circuit.append("DETECTOR", [stim.target_rec(-12 + i)])
+            if basis == "Z":
+                # Z-stabilizer measurement for X-errors
+                circuit.append("DETECTOR", [stim.target_rec(-12 + i)])
+            else:
+                # X-stabilizer measurement for Z-errors
+                circuit.append("DETECTOR", [stim.target_rec(-6 + i)])
+            
     else:
         # Get the X-stabilizer measurements and compare to previous round.
         for i in range(3):
@@ -82,22 +87,34 @@ def steane_stabilizer_round(circuit, first_round=False):
     return circuit
 
 """Start with the [[7, 1, 3]] Steane Code to use as a base for concatenation later."""
-def level_1_steane(rounds):
+def level_1_steane(rounds, basis="Z"):
     circuit = stim.Circuit()
 
     # Initialize all data qubits (0-6), the ancilla qubits (7-12), and flag qubits (13-18)
     circuit.append("R", range(19))
     circuit.append("TICK")
 
+    if basis == "X":
+        circuit.append("H", range(7))
+        circuit.append("TICK")
+
     # Run QEC rounds.
     for runs in range(rounds):
-        steane_stabilizer_round(circuit, first_round=(runs==0))
+        steane_stabilizer_round(circuit, first_round=(runs==0), basis=basis)
 
-    # Returns Z logical.
+    if basis == "X":
+        circuit.append("H", range(7))
+        circuit.append("TICK")
     circuit.append("M", range(7))
-    # Final Z-stabilizer check coparing data parities and last round's Z syndromes.
-    z_stabilizers = [(3, 4, 5, 6), (1, 2, 5, 6), (0, 2, 4, 6)]
-    for j, stab in enumerate(z_stabilizers):
-        circuit.append("DETECTOR", [stim.target_rec(-7 + q) for q in stab] + [stim.target_rec(-19 + j)])
-    circuit.append("OBSERVABLE_INCLUDE", [stim.target_rec(-1-i) for i in range(7)], 0)
+
+    # Final stabilizer parities vs. the last round's syndromes of the matching type.
+    syndrome_offset = -19 if basis == "Z" else -13
+    stabilizers = [(3, 4, 5, 6), (1, 2, 5, 6), (0, 2, 4, 6)]
+    for j, stab in enumerate(stabilizers):
+        circuit.append("DETECTOR",
+                       [stim.target_rec(-7 + q) for q in stab] +
+                       [stim.target_rec(syndrome_offset + j)])
+
+    # Z basis: logical Z = Z^7. X basis: logical X = X^7. Both are the parity of all 7 outcomes.
+    circuit.append("OBSERVABLE_INCLUDE", [stim.target_rec(-1 - i) for i in range(7)], 0)
     return circuit

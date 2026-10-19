@@ -3,7 +3,7 @@ from recursive_model import concatenate_circuit
 from noise import add_circuit_noise
 
 """Detector Measurements"""
-level2_circuit = concatenate_circuit(level_1_steane(1), 1)
+level2_circuit = concatenate_circuit(level_1_steane(1, "Z"), 1)
 noise_levels = [1e-3, 3e-4, 1e-4, 3e-5, 1e-5]
 runs = 100_000
 for p in noise_levels:
